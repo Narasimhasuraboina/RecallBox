@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#075e54">
+  <title>RecallBox — WhatsApp Archive</title>
+  <link rel="stylesheet" href="/styles.css?v=background-read">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark">R</div>
+    <div><strong>RecallBox</strong><span>Local WhatsApp archive</span></div>
+    <div class="server-state"><i id="serverDot"></i><span id="serverText">Connecting…</span></div>
+  </header>
+  <main class="layout">
+    <section class="intro">
+      <p class="eyebrow">PRIVATE BY DEFAULT</p>
+      <h1>Keep a local copy<br>of a conversation.</h1>
+      <p class="lead">RecallBox keeps its server in the background and never opens, focuses, searches, or scrolls WhatsApp. It can capture the currently visible chat, or import an official export for the available transcript and media.</p>
+      <div class="notice"><strong>Coverage is best effort.</strong> A background screen capture contains only what is already visible. Use a phone export ZIP for more history and media; neither method proves a complete account history.</div>
+      <div class="source-card"><span class="source-icon">▣</span><div><b id="sourceTitle">Checking WhatsApp…</b><small id="sourceHint">If WhatsApp is already running, RecallBox can read the current view without changing its window. It will not launch WhatsApp.</small></div></div>
+    </section>
+
+    <section class="panel" aria-labelledby="downloadTitle">
+      <div class="panel-heading"><div><p class="eyebrow">NEW ARCHIVE</p><h2 id="downloadTitle">Download a chat</h2></div><span class="step-badge">01</span></div>
+      <form id="downloadForm">
+        <label for="phone">Contact phone number</label>
+        <input id="phone" type="tel" autocomplete="tel" placeholder="+91 98765 43210" required>
+        <p class="field-hint">Include the country code. The number labels the archive; RecallBox does not search WhatsApp.</p>
+
+        <label for="destination">Save archive in</label>
+        <div class="path-row"><input id="destination" type="text" required><button class="button secondary" id="browseButton" type="button">Choose folder</button></div>
+        <p class="field-hint">Your preferred folder is remembered on this Windows computer.</p>
+
+        <label class="confirm"><input id="ownChat" type="checkbox" required><span>I selected the matching conversation in my own WhatsApp account. RecallBox may read only the currently visible view and will not interact with WhatsApp.</span></label>
+        <button id="downloadButton" class="button primary" type="submit"><span>Download Chat</span><span aria-hidden="true">→</span></button>
+        <div id="formError" class="error" role="alert" hidden></div>
+      </form>
+    </section>
+
+    <section class="panel import-panel" aria-labelledby="importTitle">
+      <div class="panel-heading"><div><p class="eyebrow">OFFICIAL EXPORT</p><h2 id="importTitle">Import a WhatsApp export</h2></div><span class="step-badge">02</span></div>
+      <p class="field-hint export-help">Use this path when the Windows chat view doesn’t expose readable messages. On your phone, open the chat, choose <b>Export chat</b>, and select media if offered. Transfer the resulting .txt or .zip to this PC, or open RecallBox in Android over LAN and select the export there.</p>
+      <form id="importForm">
+        <div class="import-grid">
+          <div><label for="importPhone">Contact phone number</label><input id="importPhone" type="tel" autocomplete="tel" placeholder="+91 98765 43210" required></div>
+          <div><label for="exportFile">WhatsApp export file (.txt or .zip)</label><input id="exportFile" type="file" accept=".txt,.zip,text/plain,application/zip" required></div>
+        </div>
+        <label class="confirm"><input id="importOwnChat" type="checkbox" required><span>This official export is from a conversation in my own WhatsApp account and matches the number above.</span></label>
+        <button id="importButton" class="button secondary import-button" type="submit">Import export file</button>
+        <div id="uploadProgress" class="upload-progress" hidden><div class="progress-track"><span id="uploadProgressBar"></span></div><span id="uploadProgressText">Preparing upload…</span></div>
+        <div id="importError" class="error" role="alert" hidden></div>
+      </form>
+    </section>
+
+    <section class="jobs-section">
+      <div class="section-heading"><div><p class="eyebrow">LOCAL ARCHIVES</p><h2>Downloads</h2></div><button id="refreshButton" class="icon-button" title="Refresh downloads" aria-label="Refresh downloads">↻</button></div>
+      <div id="jobs" class="jobs"><div class="empty">Your downloads and their progress will appear here.</div></div>
+    </section>
+
+    <footer><span>Stored on this computer</span><span>•</span><span>No cloud upload</span><span>•</span><span>Android access requires the Windows server to stay on</span></footer>
+  </main>
+  <div id="tokenGate" class="token-gate" hidden>
+    <div class="token-card"><div class="brand-mark">R</div><h2>Connect to your Windows server</h2><p>Enter the one-run access token printed in RecallBox’s Windows console.</p><label for="lanToken">Private network access token</label><input id="lanToken" type="password" autocomplete="off"><button id="saveToken" class="button primary">Connect</button></div>
+  </div>
+  <script src="/app.js?v=background-read" defer></script>
+</body>
+</html>

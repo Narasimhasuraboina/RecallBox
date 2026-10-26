@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+**/.recallbox/
+**/Contact-*/
+WhatsApp-Archive/
+RecallBox-Data/
+/test-data/
+/test-archive/
+/test-archive2/
+*.user
+*.suo
+.vs/
+.idea/
+*.log
+RecallBox-Windows.zip
