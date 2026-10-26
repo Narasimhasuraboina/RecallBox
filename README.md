@@ -4,6 +4,8 @@ RecallBox is a browser-only chat export converter. Select a WhatsApp export—or
 
 **No .NET, server, account, or WhatsApp desktop app is needed.** The selected file is processed in your browser; RecallBox does not upload chat content.
 
+**Use RecallBox online:** [recallbox-nine.vercel.app](https://recallbox-nine.vercel.app/)
+
 ## Use it
 
 1. On your phone, open the WhatsApp conversation and choose **Export chat**. Include media if WhatsApp offers that option.
