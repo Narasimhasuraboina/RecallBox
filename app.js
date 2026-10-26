@@ -19,6 +19,21 @@
   const themeToggle = document.querySelector("#themeToggle");
   let outputDirectory = null;
 
+  document.querySelectorAll(".card, .outputs, .format-help").forEach(surface => {
+    surface.addEventListener("pointermove", event => {
+      if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const bounds = surface.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width;
+      const y = (event.clientY - bounds.top) / bounds.height;
+      surface.style.setProperty("--pointer-x", `${x * 100}%`);
+      surface.style.setProperty("--pointer-y", `${y * 100}%`);
+      surface.style.setProperty("--tilt-x", `${(0.5 - y) * 2.2}deg`);
+      surface.style.setProperty("--tilt-y", `${(x - 0.5) * 2.2}deg`);
+      surface.classList.add("pointer-active");
+    });
+    surface.addEventListener("pointerleave", () => surface.classList.remove("pointer-active"));
+  });
+
   syncThemeToggle();
   themeToggle.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
