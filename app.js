@@ -16,7 +16,16 @@
   const resultPanel = document.querySelector("#resultPanel");
   const resultTitle = document.querySelector("#resultTitle");
   const resultLocation = document.querySelector("#resultLocation");
+  const themeToggle = document.querySelector("#themeToggle");
   let outputDirectory = null;
+
+  syncThemeToggle();
+  themeToggle.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = nextTheme;
+    try { localStorage.setItem("recallbox-theme", nextTheme); } catch { /* Theme still applies for this page view. */ }
+    syncThemeToggle();
+  });
 
   const folderPickerAvailable = window.isSecureContext && typeof window.showDirectoryPicker === "function";
   if (!folderPickerAvailable) {
@@ -82,6 +91,14 @@
     progressTitle.textContent = title;
     progressDetail.textContent = detail || "";
     progressBar.style.width = `${Math.max(2, Math.min(100, percent))}%`;
+  }
+
+  function syncThemeToggle() {
+    const isDark = document.documentElement.dataset.theme === "dark";
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggle.setAttribute("aria-label", `Switch to ${isDark ? "light" : "dark"} mode`);
+    themeToggle.querySelector(".theme-icon").textContent = isDark ? "☀" : "☾";
+    themeToggle.querySelector(".theme-label").textContent = isDark ? "Light mode" : "Dark mode";
   }
 
   async function uniqueContactFolder(parent, phone) {

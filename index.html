@@ -6,12 +6,13 @@
   <meta name="theme-color" content="#155c4b">
   <meta name="description" content="Convert WhatsApp chat exports into a structured archive on your device.">
   <title>RecallBox — Local Chat Export Converter</title>
+  <script>try{const saved=localStorage.getItem('recallbox-theme');document.documentElement.dataset.theme=saved||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="./" aria-label="RecallBox home"><span class="brand-mark">R</span><span><b>RecallBox</b><small>Local chat archive</small></span></a>
-    <div class="privacy-state"><span class="privacy-dot"></span>Runs in this browser</div>
+    <div class="header-actions"><div class="privacy-state"><span class="privacy-dot"></span>Runs in this browser</div><button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Dark mode</span></button></div>
   </header>
 
   <main class="shell">

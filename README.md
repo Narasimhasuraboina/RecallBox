@@ -22,6 +22,8 @@ cd RecallBox
 
 Then open `index.html`. The ZIP library is included locally, so conversion works without a package install or external script. An HTTPS static host can enable directory selection in browsers that require a secure context; hosting the page does not send the selected files to the host.
 
+RecallBox follows your device's light/dark setting on first open. Use the theme button in the header to switch themes; your choice is remembered in that browser.
+
 ## Supported exports
 
 - WhatsApp `.txt` exports and `.zip` exports containing the transcript and media.
