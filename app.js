@@ -19,7 +19,12 @@
   const themeToggle = document.querySelector("#themeToggle");
   let outputDirectory = null;
 
-  document.querySelectorAll(".card, .outputs, .format-help").forEach(surface => {
+  document.addEventListener("pointermove", event => {
+    if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
+    document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
+  });
+  document.querySelectorAll(".intro, .card, .outputs, .format-help, .privacy-note, .steps span, .folder-preview").forEach(surface => {
     surface.addEventListener("pointermove", event => {
       if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const bounds = surface.getBoundingClientRect();
