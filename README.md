@@ -5,24 +5,24 @@ RecallBox is a free, local Windows app for saving WhatsApp chat exports as reada
 ## Quick start on Windows
 
 1. Install the free [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) on Windows 10 or 11.
-2. Download this repository from GitHub and extract it, or clone it:
+2. Download the repository from GitHub and extract the ZIP, or clone it in PowerShell:
 
    ```powershell
    git clone https://github.com/Narasimhasuraboina/RecallBox.git
    cd RecallBox
    ```
 
-3. Double-click **Start-RecallBox-Background.vbs**. RecallBox starts quietly in the background; it does not open WhatsApp.
-4. Open <http://localhost:5180> in your browser.
-5. On your phone, open the WhatsApp conversation, choose **Export chat**, and include media if WhatsApp offers that option. Transfer the resulting `.zip` to the Windows computer.
-6. In RecallBox, choose the archive folder, enter the contact number with its country code, select the export `.zip`, confirm it belongs to your account, then choose **Import export file**.
-7. Find the archive in the selected folder under `Contact-<phone digits>`. Open `chat.html` to read it.
+3. Double-click **Start-RecallBox-Background.vbs**. RecallBox starts quietly in the background; it does not open WhatsApp. If Windows blocks the script, right-click it and choose **Open**.
+4. Open <http://localhost:5180> in your browser. The export conversion form is the main panel.
+5. On your phone, open the WhatsApp conversation, choose **Export chat**, and include media if WhatsApp offers that option. Transfer the resulting `.zip` to the Windows computer. A `.txt` export also works, but it will not contain media files.
+6. In RecallBox, enter the contact number with its country code, choose the local destination folder, select the export file, confirm it belongs to your account, then click **Convert export and save archive**.
+7. Watch the progress card. When it finishes, RecallBox shows the archive folder and the files it created. Open `chat.html` in that folder to read the chat; `messages.json` contains the structured records.
 
 The export importer works even when WhatsApp Desktop is closed or not installed on the Windows computer. To see startup errors, run `Start-RecallBox.ps1` in PowerShell instead of the hidden launcher. Stop the background app by running `Stop-RecallBox.ps1` in PowerShell.
 
 ## What the Windows chat scan can do
 
-If WhatsApp Desktop is already running and you have selected the target chat yourself, **Download Chat** can read the message controls exposed in that view or use local OCR on the visible window. RecallBox does not launch, focus, search, click, or scroll WhatsApp. This scan captures only the current view; it cannot retrieve older messages while running in the background. A displayed phone number may not be available for independent verification, so confirm the selected chat in the app before starting.
+If WhatsApp Desktop is already running and you have selected the target chat yourself, the optional **Capture visible view** section can read the message controls exposed in that view or use local OCR on the visible window. RecallBox does not launch, focus, search, click, or scroll WhatsApp. This scan captures only the current view; it cannot retrieve older messages while running in the background. A displayed phone number may not be available for independent verification, so confirm the selected chat in the app before starting.
 
 Use the phone's **Export chat** feature for a fuller transcript and any media included in the export. Linked devices can have incomplete history, and WhatsApp exports may also omit content. RecallBox reports known gaps and never labels an archive historically complete without evidence.
 
