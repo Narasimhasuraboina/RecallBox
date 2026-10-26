@@ -24,6 +24,16 @@
     document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
     document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
   });
+  document.addEventListener("pointerdown", event => {
+    if (event.button !== 0 || event.isPrimary === false) return;
+    const ripple = document.createElement("span");
+    ripple.className = "click-ripple";
+    ripple.setAttribute("aria-hidden", "true");
+    ripple.style.left = `${event.clientX}px`;
+    ripple.style.top = `${event.clientY}px`;
+    document.body.append(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+  });
   document.querySelectorAll(".intro, .card, .outputs, .format-help, .privacy-note, .steps span, .folder-preview").forEach(surface => {
     surface.addEventListener("pointermove", event => {
       if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
