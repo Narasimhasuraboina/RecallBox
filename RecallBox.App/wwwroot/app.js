@@ -74,9 +74,12 @@ async function loadJobs() {
       ? `<button data-retry="${escapeHtml(job.id)}">${job.status === "cancelled-with-checkpoint" ? "Resume chat scan" : job.acquisitionMethod?.includes("export") ? "Retry saved export" : "Retry chat scan"}</button>` : "";
     const cancel = ["running", "queued"].includes(job.status) && !job.acquisitionMethod?.includes("export")
       ? `<button class="secondary" data-cancel="${escapeHtml(job.id)}">Cancel and save progress</button>` : "";
-    const resultPath = job.resultPath ? `<span>${escapeHtml(job.resultPath)}</span>` : "";
+    const isExport = job.acquisitionMethod?.includes("export");
+    const resultPath = job.resultPath ? `<span><b>Saved locally:</b> ${escapeHtml(job.resultPath)}</span>` : "";
+    const archiveFiles = isExport && job.status === "completed-with-limitations"
+      ? '<div class="archive-result"><b>Structured archive created</b><span>chat.html</span><span>messages.json</span><span>messages.txt</span><span>metadata.json</span><span>media folders</span></div>' : "";
     const button = job.status === "running" || job.status === "queued" ? "" : retry;
-    return `<article class="job"><div class="job-top"><div><h3>${escapeHtml(job.phoneNumber)}</h3><small>${escapeHtml(job.contactFolder)} · ${escapeHtml(job.acquisitionMethod || "UI scan")}</small></div><span class="status ${job.status === "failed" ? "failed" : ""}">${escapeHtml(job.status)}</span></div><div class="progress-track"><span style="width:${progress}%"></span></div><div class="job-stats"><span>${job.messagesSaved} messages saved</span><span>${job.attachmentsSaved} attachments saved</span><span>${job.itemsSkipped} items skipped</span><span>${job.pagesRead} views read</span></div><div class="job-phase">${escapeHtml(job.phase)} · coverage ${escapeHtml(job.coverage)}</div>${warnings}${errors}<div class="job-actions">${resultPath}${button}${cancel}</div></article>`;
+    return `<article class="job"><div class="job-top"><div><h3>${escapeHtml(job.phoneNumber)}</h3><small>${escapeHtml(job.contactFolder)} · ${escapeHtml(job.acquisitionMethod || "UI scan")}</small></div><span class="status ${job.status === "failed" ? "failed" : ""}">${escapeHtml(job.status)}</span></div><div class="progress-track"><span style="width:${progress}%"></span></div><div class="job-stats"><span>${job.messagesSaved} messages saved</span><span>${job.attachmentsSaved} attachments saved</span><span>${job.itemsSkipped} items skipped</span><span>${job.pagesRead} views read</span></div><div class="job-phase">${escapeHtml(job.phase)} · coverage ${escapeHtml(job.coverage)}</div>${warnings}${errors}${archiveFiles}<div class="job-actions">${resultPath}${button}${cancel}</div></article>`;
   }).join("");
   container.querySelectorAll("[data-retry]").forEach(button => button.addEventListener("click", async () => {
     button.disabled = true;
@@ -153,7 +156,7 @@ document.querySelector("#importForm").addEventListener("submit", event => {
       document.querySelector("#importPhone").value = "";
       document.querySelector("#exportFile").value = "";
       document.querySelector("#importOwnChat").checked = false;
-      document.querySelector("#uploadProgressText").textContent = "Export received; archive processing is running below.";
+      document.querySelector("#uploadProgressText").textContent = "Export received. RecallBox is converting it locally; see the progress card below.";
     } catch (e) { error.textContent = e.message; error.hidden = false; }
     finally { button.disabled = false; }
   });
