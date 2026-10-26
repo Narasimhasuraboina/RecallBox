@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#155c4b">
+  <meta name="description" content="Convert WhatsApp chat exports into a structured archive on your device.">
+  <title>RecallBox — Local Chat Export Converter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="RecallBox home"><span class="brand-mark">R</span><span><b>RecallBox</b><small>Local chat archive</small></span></a>
+    <div class="privacy-state"><span class="privacy-dot"></span>Runs in this browser</div>
+  </header>
+
+  <main class="shell">
+    <section class="intro">
+      <p class="eyebrow">PRIVATE BY DESIGN</p>
+      <h1>Your chat export,<br>organized on your device.</h1>
+      <p class="lead">Choose a WhatsApp export or a ZIP containing a supported text, JSON, or CSV chat transcript. RecallBox converts it locally into a readable chat and structured files. Nothing is uploaded.</p>
+      <div class="privacy-note"><b>No server. No account. No WhatsApp desktop app.</b><span>The selected file is processed in your browser and saved to a folder you choose, or downloaded as one archive ZIP.</span></div>
+    </section>
+
+    <section class="card converter-card" aria-labelledby="convertTitle">
+      <div class="card-heading"><div><p class="eyebrow">CREATE LOCAL ARCHIVE</p><h2 id="convertTitle">Convert a chat export</h2></div><span class="step">01</span></div>
+
+      <div class="steps" aria-label="How to prepare your export">
+        <span><i>1</i> Export the chat on your phone</span>
+        <span><i>2</i> Choose the export file here</span>
+        <span><i>3</i> Save the structured archive</span>
+      </div>
+
+      <form id="convertForm">
+        <label for="contact">Contact phone number</label>
+        <input id="contact" name="contact" type="tel" autocomplete="tel" placeholder="+91 98765 43210" required>
+        <p class="hint">Include the country code. This names the archive folder.</p>
+
+        <label for="exportFile">Chat export file</label>
+        <input id="exportFile" name="exportFile" type="file" accept=".txt,.zip,.json,.csv,text/plain,application/zip,application/json,text/csv" required>
+        <p id="fileName" class="hint file-hint">WhatsApp .txt/.zip, or a ZIP containing a .txt, .json, or .csv transcript. Maximum input size: 512 MB.</p>
+
+        <div class="destination-box">
+          <div><b>Save location</b><span id="destinationHint">Choose a folder on this device, or download one ZIP if folder access isn’t supported.</span></div>
+          <button id="chooseFolder" class="button secondary" type="button">Choose folder</button>
+        </div>
+        <p id="folderName" class="folder-name" hidden></p>
+
+        <label class="confirm"><input id="ownChat" type="checkbox" required><span>This export is from a conversation in my own account. I understand the archive contains only content included in the selected export.</span></label>
+        <button id="convertButton" class="button primary" type="submit">Convert and save archive <span aria-hidden="true">→</span></button>
+      </form>
+
+      <div id="progressPanel" class="progress-panel" hidden aria-live="polite">
+        <div class="progress-copy"><b id="progressTitle">Preparing export…</b><span id="progressDetail"></span></div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+      </div>
+      <div id="errorPanel" class="error" role="alert" hidden></div>
+      <div id="resultPanel" class="result-panel" hidden aria-live="polite">
+        <div class="result-check">✓</div>
+        <div><h3 id="resultTitle">Archive saved</h3><p id="resultLocation"></p><div class="result-files"><span>chat.html</span><span>messages.json</span><span>messages.txt</span><span>metadata.json</span><span>media folders</span></div></div>
+      </div>
+    </section>
+
+    <section class="outputs" aria-labelledby="outputsTitle">
+      <div><p class="eyebrow">WHAT YOU GET</p><h2 id="outputsTitle">A complete folder structure</h2><p>Open <b>chat.html</b> to read the conversation. Use <b>messages.json</b> in other tools. Media supplied with the export is matched to its message and sorted by type.</p></div>
+      <div class="folder-preview" aria-label="Archive folder structure">
+        <div class="tree-line root-line">📁 Contact-phone-number/</div>
+        <div class="tree-line">├─ 📄 chat.html</div><div class="tree-line">├─ 📄 messages.json</div><div class="tree-line">├─ 📄 messages.txt</div><div class="tree-line">├─ 📄 metadata.json</div><div class="tree-line">└─ 📁 media/</div><div class="tree-line indent">├─ images/ · videos/ · audio/</div><div class="tree-line indent">└─ documents/ · other/</div>
+      </div>
+    </section>
+
+    <details class="format-help">
+      <summary>Supported formats and privacy details</summary>
+      <div class="details-content">
+        <p><b>WhatsApp:</b> Android/iPhone text exports and ZIP exports with media. A ZIP may contain a chat transcript and its attachments.</p>
+        <p><b>Other chat exports:</b> UTF-8 text transcripts with timestamped lines, JSON arrays or objects with a <code>messages</code> list, and CSV files with timestamp/date, sender/author, and message/text columns. A ZIP must include one of these transcript formats. Unsupported files are rejected; arbitrary ZIP contents are not guessed.</p>
+        <p><b>Local processing:</b> the parser and ZIP library are included with this site. Your selected file is never sent to a server. The browser asks before writing to a selected folder. If direct folder writing is unavailable, RecallBox downloads one ZIP containing the same folder structure.</p>
+        <p><b>Limits:</b> exports can omit older messages or media. Ambiguous dates are kept as original text and not guessed. RecallBox reports omitted attachments and parsing warnings in <code>metadata.json</code>.</p>
+      </div>
+    </details>
+  </main>
+
+  <footer><span>RecallBox runs locally in your browser</span><span>•</span><span>No chat data upload</span><span>•</span><span>Export content only; no history completeness claim</span></footer>
+  <script src="vendor/jszip.min.js"></script>
+  <script src="converter.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

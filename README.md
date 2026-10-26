@@ -1,70 +1,68 @@
 # RecallBox
 
-RecallBox is a free, local Windows app for saving WhatsApp chat exports as readable archives. It stores the archive on your computer and can show its progress in a browser on Windows or Android. Messages and media are not uploaded to a cloud service.
+RecallBox is a browser-only chat export converter. Select a WhatsApp export—or a ZIP containing a supported chat transcript—and RecallBox creates a readable chat page, structured JSON, a text transcript, metadata, and folders for the media included in the export.
 
-## Quick start on Windows
+**No .NET, server, account, or WhatsApp desktop app is needed.** The selected file is processed in your browser; RecallBox does not upload chat content.
 
-1. Install the free [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) on Windows 10 or 11.
-2. Download the repository from GitHub and extract the ZIP, or clone it in PowerShell:
+## Use it
 
-   ```powershell
-   git clone https://github.com/Narasimhasuraboina/RecallBox.git
-   cd RecallBox
-   ```
+1. On your phone, open the WhatsApp conversation and choose **Export chat**. Include media if WhatsApp offers that option.
+2. Transfer the `.zip` or `.txt` export to the device where you will use RecallBox.
+3. Open `index.html` in a modern browser, or open the hosted static site over HTTPS.
+4. Enter the contact number with its country code, choose the export, and confirm it belongs to your account.
+5. Choose **Choose folder** if your browser supports direct folder access. RecallBox creates a new `Contact-<digits>` folder there. If the folder picker is unavailable, RecallBox downloads one ZIP containing the same folder structure; save and extract it where you want.
+6. Open `Contact-<digits>/chat.html` to read the archive. `messages.json` contains structured records.
 
-3. Double-click **Start-RecallBox-Background.vbs**. RecallBox starts quietly in the background; it does not open WhatsApp. If Windows blocks the script, right-click it and choose **Open**.
-4. Open <http://localhost:5180> in your browser. The export conversion form is the main panel.
-5. On your phone, open the WhatsApp conversation, choose **Export chat**, and include media if WhatsApp offers that option. Transfer the resulting `.zip` to the Windows computer. A `.txt` export also works, but it will not contain media files.
-6. In RecallBox, enter the contact number with its country code, choose the local destination folder, select the export file, confirm it belongs to your account, then click **Convert export and save archive**.
-7. Watch the progress card. When it finishes, RecallBox shows the archive folder and the files it created. Open `chat.html` in that folder to read the chat; `messages.json` contains the structured records.
+To use the repository locally, download and extract it or clone it:
 
-The export importer works even when WhatsApp Desktop is closed or not installed on the Windows computer. To see startup errors, run `Start-RecallBox.ps1` in PowerShell instead of the hidden launcher. Stop the background app by running `Stop-RecallBox.ps1` in PowerShell.
-
-## What the Windows chat scan can do
-
-If WhatsApp Desktop is already running and you have selected the target chat yourself, the optional **Capture visible view** section can read the message controls exposed in that view or use local OCR on the visible window. RecallBox does not launch, focus, search, click, or scroll WhatsApp. This scan captures only the current view; it cannot retrieve older messages while running in the background. A displayed phone number may not be available for independent verification, so confirm the selected chat in the app before starting.
-
-Use the phone's **Export chat** feature for a fuller transcript and any media included in the export. Linked devices can have incomplete history, and WhatsApp exports may also omit content. RecallBox reports known gaps and never labels an archive historically complete without evidence.
-
-## Android access
-
-The default service is localhost-only. To let an Android device on your private network view progress or upload an export, run this in PowerShell:
-
-```powershell
-.\Start-RecallBox.ps1 -Lan
+```sh
+git clone https://github.com/Narasimhasuraboina/RecallBox.git
+cd RecallBox
 ```
 
-Use the private URL and one-run access token printed in the Windows console on your Android browser. Keep both devices on the same private network. The Windows computer and RecallBox must remain on. Stop the app with `Stop-RecallBox.ps1`; the next LAN launch creates a new token. Do not share the token outside your network.
+Then open `index.html`. The ZIP library is included locally, so conversion works without a package install or external script. An HTTPS static host can enable directory selection in browsers that require a secure context; hosting the page does not send the selected files to the host.
 
-## Archive contents
+## Supported exports
 
-Each chat is stored in `Contact-<phone digits>` with:
+- WhatsApp `.txt` exports and `.zip` exports containing the transcript and media.
+- ZIP files containing a timestamped `.txt` transcript, a JSON array or object with a `messages`/`items` list, or a CSV with timestamp, sender, and message columns.
+- Standalone `.txt`, `.json`, and `.csv` files using those same transcript formats.
 
-- `chat.html` — responsive conversation view
-- `messages.json` — structured message records
-- `messages.txt` — plain text transcript
-- `metadata.json` — status, counts, warnings, and known limitations
-- `media/images`, `media/videos`, `media/audio`, `media/documents`, `media/other`
-- `.recallbox/messages.jsonl` — resumable local checkpoint
+ZIPs are inspected locally. When several transcript files are present, RecallBox chooses the supported transcript with the most recognized messages and reports that choice. Attachments referenced by filename are matched to ZIP entries; duplicate filenames are handled separately. Missing or omitted files are marked in the original message and in `metadata.json`. Arbitrary binary ZIPs without a recognized transcript are rejected instead of guessed.
 
-RecallBox remembers only the preferred destination in `%LOCALAPPDATA%\RecallBox\settings.json`. Archives and indexes stay in the destination you choose.
+## Output structure
 
-## Privacy and limits
-
-- No paid services, API subscriptions, or cloud hosting are required.
-- The service binds to localhost by default. LAN access is opt-in and API requests require the one-run token.
-- RecallBox does not inspect WhatsApp databases, decrypt account data, request credentials, or save OCR screenshots.
-- The direct Windows scan can read only the currently visible chat view and cannot retrieve media binaries. Import a phone export ZIP for media files included in that export.
-- `metadata.json` reports missing items and uncertainty. A successful import means the supplied export was parsed; it does not prove that WhatsApp supplied complete account history.
-
-WhatsApp describes chat export in its [official help article](https://faq.whatsapp.com/1180414079177245/) and notes that exports are not restorable backups.
-
-## Build from source
-
-On Windows with the .NET 8 SDK:
-
-```powershell
-dotnet build .\RecallBox.App\RecallBox.App.csproj -c Release
+```text
+Contact-<digits>/
+├── chat.html
+├── messages.json
+├── messages.txt
+├── metadata.json
+└── media/
+    ├── images/
+    ├── videos/
+    ├── audio/
+    ├── documents/
+    └── other/
 ```
 
-`RecallBox.Poc` contains optional Windows UI Automation diagnostics. Run it only if you want to inspect your own WhatsApp client; the main RecallBox app does not interact with the WhatsApp window.
+The JSON preserves source order, sender, original timestamp text, parsed dates when unambiguous, message text, and attachment links. Metadata records counts, missing media, warnings, and the selected source file. Existing contact folders are not overwritten when saving directly; RecallBox chooses a new numbered folder.
+
+## Local file handling
+
+- RecallBox reads the selected export in the browser and makes no upload or analytics requests.
+- Direct folder saving uses the browser's File System Access API and asks you to choose a folder. Browser support varies, and a secure context/user gesture may be required. If unavailable, use the archive ZIP download.
+- On Android and browsers without folder writing, the ZIP download is the portable option; extract it with the device's file manager.
+- Input files are limited to 512 MB, transcripts to 128 MB, ZIP entry count to 20,000, and expanded ZIP contents to 2 GB to limit browser memory use.
+- Exports can omit messages or media. Ambiguous dates remain as text and are not guessed. RecallBox never claims that an export contains complete account history.
+
+See the browser's [directory picker documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker) for current compatibility details.
+
+## Project files
+
+- `index.html`, `styles.css`, `app.js` — static interface and local save/download flow
+- `converter.js` — transcript parsing, archive generation, metadata, and media matching
+- `vendor/jszip.min.js` — vendored JSZip 3.10.1 for local ZIP reading/writing
+- `vendor/JSZip-LICENSE.txt` — JSZip MIT license
+
+There is no build step or server process. To update the app, edit these files and reload the page.
